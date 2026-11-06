@@ -1,0 +1,332 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pomodoro</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-mode="focus">
+  <div class="bg-glow"></div>
+
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-icon">
+        <svg viewBox="0 0 32 32" aria-hidden="true"><use href="#tomato"/></svg>
+      </span>
+      <span class="brand-name">Pomodoro</span>
+      <span class="dev-badge" id="devBadge" hidden title="Версия для разработки: отдельные данные, твои реальные данные не затрагиваются">DEV</span>
+    </div>
+    <div class="topbar-actions">
+      <span class="save-state" id="saveState" title="Состояние сохранения"></span>
+      <button class="icon-btn" id="openScreen" title="Экранное время iPhone" aria-label="Экранное время iPhone">
+        <svg viewBox="0 0 24 24"><rect x="6.5" y="2.5" width="11" height="19" rx="2.6"/><path d="M10.5 18.5h3"/></svg>
+      </button>
+      <button class="icon-btn" id="openHabits" title="Привычки" aria-label="Привычки">
+        <svg viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><path d="M8 12.2l2.8 2.8L16.5 9"/></svg>
+      </button>
+      <button class="icon-btn" id="openStats" title="Статистика" aria-label="Статистика">
+        <svg viewBox="0 0 24 24"><path d="M4 20h16"/><path d="M7 16v-5"/><path d="M12 16V6"/><path d="M17 16v-8"/></svg>
+      </button>
+      <button class="icon-btn" id="openGoals" title="Цели на день" aria-label="Цели на день">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.2"/></svg>
+      </button>
+      <button class="icon-btn" id="openSettings" title="Настройки" aria-label="Настройки">
+        <svg viewBox="0 0 24 24"><path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <main class="layout">
+    <section class="col-left">
+      <!-- Таймер -->
+      <div class="card timer-card">
+
+        <div class="ring-wrap">
+          <svg class="ring" viewBox="0 0 300 300">
+            <defs>
+              <linearGradient id="ringGrad" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" class="grad-a"/>
+                <stop offset="1" class="grad-b"/>
+              </linearGradient>
+            </defs>
+            <circle class="ring-track" cx="150" cy="150" r="132"/>
+            <circle class="ring-progress" id="ringProgress" cx="150" cy="150" r="132"/>
+            <circle class="ring-dot" id="ringDot" cx="150" cy="18" r="7"/>
+          </svg>
+          <div class="ring-center">
+            <div class="mode-label" id="modeLabel">Фокус</div>
+            <div class="time" id="time">25:00</div>
+            <div class="round-label" id="roundLabel">Помидорка 1 из 4</div>
+          </div>
+        </div>
+
+        <div class="round-dots" id="roundDots"></div>
+
+        <div class="controls">
+          <button class="ctrl ghost" id="resetBtn" title="Сбросить (R)" aria-label="Сбросить">
+            <svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg>
+          </button>
+          <button class="ctrl primary" id="startBtn" title="Старт / пауза (Пробел)">
+            <svg class="i-play" viewBox="0 0 24 24"><path d="M7 4.5v15l13-7.5z"/></svg>
+            <svg class="i-pause" viewBox="0 0 24 24"><rect x="6" y="4.5" width="4" height="15" rx="1.2"/><rect x="14" y="4.5" width="4" height="15" rx="1.2"/></svg>
+            <span id="startLabel">Старт</span>
+          </button>
+          <button class="ctrl ghost" id="skipBtn" title="Пропустить (S)" aria-label="Пропустить">
+            <svg viewBox="0 0 24 24"><path d="M5 5l10 7-10 7z"/><path d="M19 5v14"/></svg>
+          </button>
+        </div>
+        <div class="hint">
+          <span><kbd>Пробел</kbd>старт / пауза</span>
+          <span><kbd>S</kbd>пропустить</span>
+          <span><kbd>R</kbd>сброс</span>
+        </div>
+      </div>
+
+    </section>
+
+    <section class="col-right">
+      <div class="card log-card">
+        <div class="card-head">
+          <button class="icon-btn small" id="prevDay" aria-label="Предыдущий день">
+            <svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg>
+          </button>
+          <div class="day-title">
+            <h2 id="dayTitle">Сегодня</h2>
+            <div class="day-sub" id="daySub"></div>
+            <button type="button" class="link-btn day-summary" id="openDaySummary">Сводка дня
+              <svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+          </div>
+          <button class="icon-btn small" id="nextDay" aria-label="Следующий день">
+            <svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg>
+          </button>
+        </div>
+
+        <div class="stats">
+          <div class="stat">
+            <div class="stat-value" id="statCount">0</div>
+            <div class="stat-label">помидорок</div>
+          </div>
+          <div class="stat">
+            <div class="stat-value" id="statTime">0 мин</div>
+            <div class="stat-label">в фокусе</div>
+          </div>
+          <div class="stat">
+            <div class="stat-value" id="statStreak">0</div>
+            <div class="stat-label">дней подряд</div>
+          </div>
+        </div>
+
+        <div class="goals" id="goals"></div>
+
+        <div class="cat-bar" id="catBar"></div>
+        <div class="cat-legend" id="catLegend"></div>
+
+        <div class="entries-head">
+          <span class="entries-title">Помидорки</span>
+          <button class="add-manual" id="addManual" title="Добавить помидорку вручную">
+            <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+            Добавить вручную
+          </button>
+        </div>
+        <ul class="entries" id="entries"></ul>
+        <div class="empty" id="empty">
+          <svg viewBox="0 0 32 32" aria-hidden="true"><use href="#tomato"/></svg>
+          <p>Пока ни одной помидорки.<br>Запусти таймер — завершённые сессии появятся здесь.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Настройки -->
+  <dialog class="modal" id="settings" autofocus>
+    <form method="dialog" class="modal-inner" id="settingsForm">
+      <div class="modal-head">
+        <h2>Настройки</h2>
+        <button class="icon-btn small" value="close" aria-label="Закрыть">
+          <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <h3>Таймер</h3>
+        <div class="grid-4">
+          <label class="field"><span>Фокус, мин</span><input type="number" min="1" max="180" name="focus"></label>
+          <label class="field"><span>Короткий перерыв, мин</span><input type="number" min="1" max="60" name="short"></label>
+          <label class="field"><span>Длинный перерыв, мин</span><input type="number" min="1" max="120" name="long"></label>
+          <label class="field"><span>Помидорок в раунде</span><input type="number" min="1" max="12" name="perRound"></label>
+        </div>
+
+        <div class="toggles">
+          <label class="toggle"><input type="checkbox" name="autoBreak"><span class="sw"></span><span>Автоматически начинать перерыв</span></label>
+          <label class="toggle"><input type="checkbox" name="autoFocus"><span class="sw"></span><span>Автоматически начинать следующую помидорку</span></label>
+          <label class="toggle"><input type="checkbox" name="chime"><span class="sw"></span><span>Звуковой сигнал по окончании</span></label>
+          <label class="toggle"><input type="checkbox" name="notify"><span class="sw"></span><span>Системное уведомление</span></label>
+        </div>
+
+        <h3>Время</h3>
+        <div class="tz-row">
+          <label class="field tz-field"><span>Часовой пояс приложения</span>
+            <select id="tzSelect" aria-describedby="tzHint"></select>
+          </label>
+          <div class="tz-now" id="tzHint"></div>
+        </div>
+        <p class="muted small tz-note">Даты, «сегодня», время помидорок, графики и экранное время считаются в этом поясе — даже если на Маке стоит другой.</p>
+
+        <h3>Категории</h3>
+        <ul class="cat-editor" id="catEditor"></ul>
+        <div class="cat-add">
+          <button type="button" class="swatch-btn" id="newCatColor" aria-label="Цвет категории"></button>
+          <input type="text" id="newCatName" placeholder="Новая категория" maxlength="40">
+          <button type="button" class="btn" id="addCat">Добавить</button>
+        </div>
+
+        <h3>Данные</h3>
+        <p class="muted small">Файл: <code id="dataPath">…</code></p>
+        <p class="muted small">Резервные копии (каждый день, хранятся 60 дней): <code id="backupPath">…</code></p>
+        <p class="muted small">Версия: <code id="appVersion">…</code></p>
+        <div class="row-btns">
+          <button type="button" class="btn" id="exportBtn">Экспорт JSON</button>
+          <button type="button" class="btn" id="exportCsvBtn">Экспорт CSV</button>
+          <button type="button" class="btn danger" id="quitBtn">Остановить сервер</button>
+        </div>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Цели -->
+  <dialog class="modal" id="goalsDlg" autofocus>
+    <form method="dialog" class="modal-inner">
+      <div class="modal-head">
+        <h2>Цели на день</h2>
+        <button class="icon-btn small" value="close" aria-label="Закрыть">
+          <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p class="goals-intro">Цели одни на все дни. Выбери категории и сколько помидорок по каждой нужно сделать за день.</p>
+        <ul class="goal-editor" id="goalEditor"></ul>
+        <button type="button" class="add-goal" id="addGoal">+ Добавить цель</button>
+        <div class="goal-total" id="goalTotal"></div>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Статистика -->
+  <dialog class="modal modal-wide" id="statsDlg" autofocus>
+    <div class="modal-inner">
+      <div class="modal-head">
+        <h2>Статистика</h2>
+        <div class="seg" id="statsRange" role="radiogroup" aria-label="Период">
+          <button type="button" data-range="1">День</button>
+          <button type="button" data-range="7">7 дней</button>
+          <button type="button" data-range="30">30 дней</button>
+          <button type="button" data-range="365">Год</button>
+        </div>
+        <button type="button" class="icon-btn small" id="closeStats" aria-label="Закрыть">
+          <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg>
+        </button>
+      </div>
+      <div class="modal-body stats-body">
+        <div id="stDay" hidden></div>
+        <div id="stPeriod">
+        <div class="st-tiles" id="stTiles"></div>
+
+        <section class="st-section">
+          <div class="st-head">
+            <h3 id="stChartTitle">Помидорки по дням</h3>
+          </div>
+          <div class="st-chart" id="stChart"></div>
+          <div class="st-legend" id="stLegend"></div>
+        </section>
+
+        <section class="st-section">
+          <div class="st-head"><h3>Активность за год</h3></div>
+          <div class="heat-wrap"><div class="heat" id="stHeat"></div></div>
+          <div class="heat-scale" id="stHeatScale"></div>
+        </section>
+
+        <section class="st-section" id="stHabitsSec">
+          <div class="st-head"><h3>Привычки</h3></div>
+          <div class="st-habits" id="stHabits"></div>
+        </section>
+
+        <section class="st-section">
+          <div class="st-head"><h3>По категориям</h3></div>
+          <div class="st-cats" id="stCats"></div>
+        </section>
+        <p class="st-hint">Нажми на столбик, клетку тепловой карты или привычки, чтобы открыть этот день.</p>
+        </div>
+      </div>
+    </div>
+    <div class="st-tip" id="stTip" role="tooltip"></div>
+  </dialog>
+
+  <!-- Привычки -->
+  <dialog class="modal" id="habitsDlg" autofocus>
+    <div class="modal-inner">
+      <div class="modal-head">
+        <h2>Привычки</h2>
+        <button type="button" class="icon-btn small" id="closeHabits" aria-label="Закрыть">
+          <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="hb-daynav">
+          <button type="button" class="icon-btn small" id="hbPrev" aria-label="Предыдущий день">
+            <svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg>
+          </button>
+          <div class="hb-day">
+            <div class="hb-day-title" id="hbDayTitle">Сегодня</div>
+            <div class="hb-day-sub" id="hbDaySub"></div>
+          </div>
+          <button type="button" class="icon-btn small" id="hbNext" aria-label="Следующий день">
+            <svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg>
+          </button>
+        </div>
+        <div class="hb-summary" id="hbSummary"></div>
+        <ul class="hb-list" id="hbList"></ul>
+        <div class="hb-add">
+          <button type="button" class="swatch-btn" id="hbColor" aria-label="Цвет привычки"></button>
+          <input type="text" id="hbName" placeholder="Новая привычка, например «Зарядка»" maxlength="60">
+          <button type="button" class="btn" id="hbAdd">Добавить</button>
+        </div>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- Экранное время -->
+  <dialog class="modal modal-wide" id="scrDlg" autofocus>
+    <div class="modal-inner">
+      <div class="modal-head">
+        <h2>Экранное время</h2>
+        <div class="seg" id="scrMode" role="radiogroup" aria-label="Период">
+          <button type="button" data-mode="day">День</button>
+          <button type="button" data-mode="week">Неделя</button>
+        </div>
+        <button type="button" class="icon-btn small" id="scrRefresh" title="Обновить" aria-label="Обновить данные">
+          <svg viewBox="0 0 24 24"><path d="M20 11a8 8 0 1 0-2.3 5.7"/><path d="M20 4v7h-7"/></svg>
+        </button>
+        <button type="button" class="icon-btn small" id="scrClose" aria-label="Закрыть">
+          <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg>
+        </button>
+      </div>
+      <div class="modal-body" id="scrBody"></div>
+    </div>
+  </dialog>
+
+  <div class="toast" id="toast"></div>
+
+  <svg width="0" height="0" style="position:absolute">
+    <symbol id="tomato" viewBox="0 0 32 32">
+      <path fill="var(--tomato-body)" d="M16 8c7.5 0 13 4.6 13 11s-5.6 11-13 11S3 25.4 3 19 8.5 8 16 8Z"/>
+      <path fill="#fff" opacity=".22" d="M9 14.5c1.8-2 4-3 6.5-3.3.6 0 .7.8.1 1-2.2.6-4 1.7-5.4 3.3-.5.6-1.6-.3-1.2-1Z"/>
+      <path fill="#3fae5a" d="M16 4.5c.6 0 1 .4 1 1V8l3.6-1.6c.6-.2 1 .4.7.9L19.6 10l3.9.6c.6.1.6.9 0 1.1l-4.6 1-2.3 2.2c-.4.4-1 .4-1.3 0L13 12.7l-4.5-1c-.6-.2-.6-1 0-1.1l3.9-.6L10.8 7.3c-.3-.5.1-1.1.7-.9L15 8V5.5c0-.6.4-1 1-1Z"/>
+    </symbol>
+  </svg>
+
+  <script src="tz.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

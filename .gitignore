@@ -1,0 +1,12 @@
+# сборки
+build/
+*.app
+
+# macOS
+.DS_Store
+
+# данные никогда не лежат в репозитории (они в ~/Library/Application Support/Pomodoro),
+# но на всякий случай
+data.json
+screentime.json
+backups/
